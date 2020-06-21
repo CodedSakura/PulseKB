@@ -291,7 +291,7 @@ def pulse_loop():
                 pos_b = [setup.relevancy(i)[1] for i, b in combined.items() if not b]
             else:
                 r = setup.relevancy(s)
-                pos_b = [r[1] if r[0] != 0 else -1]
+                pos_b = [r[1] if r is not None and r[0] != 0 else -1]
             state.sink_layouts[pos_a] = pos_b
             if (len(pos_b) == 0 or pos_b[0] == -1) and f"invalid-{pos_a}" not in state.blinking:
                 state.blinking.add(f"invalid-{pos_a}")
