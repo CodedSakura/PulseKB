@@ -86,7 +86,7 @@ def display(clear_all: bool = False):
         ckb_out[keymap.volMute.ckb] = volume_function(state.volume[1])
 
     if state.mic_mute is not None:
-        ckb_out[keymap.m.ckb] = 'ff000088' if state.mic_mute else '00ff0088'
+        ckb_out[keymap.m.ckb] = 'ff0000b0' if state.mic_mute else '00ff00b0'
 
     for i in state.blinking:
         blink = setup.blinks[i]

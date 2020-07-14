@@ -41,7 +41,7 @@ class KeyMap:
     stop = Key("stop", KeyCode(vk=269025045))
     eject = Key(key=KeyCode(vk=269025068))
 
-    m = Key("m", KeyCode(char="m"))
+    m = Key("lock", KeyCode(char="m"))
 
     nums = [Key(ckb=f"num{i}") for i in range(10)]
 # </editor-fold>
