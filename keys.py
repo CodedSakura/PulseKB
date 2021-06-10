@@ -34,9 +34,12 @@ class KeyMap:
     pgdn = Key("pgdn", pKey.page_down)
     row_dep = [delete, end, pgdn]
 
-    volUp = Key(key=KeyCode(vk=269025043))
-    volDn = Key(key=KeyCode(vk=269025041))
-    volMute = Key("mute", KeyCode(vk=269025042))
+    volUp = Key(key=pKey.media_volume_up)
+    volDn = Key(key=pKey.media_volume_down)
+    volMute = Key("mute", pKey.media_volume_mute)
+    # volUp = Key(key=KeyCode(vk=269025043))
+    # volDn = Key(key=KeyCode(vk=269025041))
+    # volMute = Key("mute", KeyCode(vk=269025042))
 
     stop = Key("stop", KeyCode(vk=269025045))
     eject = Key(key=KeyCode(vk=269025068))

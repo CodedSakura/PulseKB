@@ -44,6 +44,8 @@ setup.sink_input_defaults = [
     ("Steam", 1),
     ("*VoiceEngine", 2),
     ("Chromium", 2),
+    ("Microsoft Teams*", 2),
+    ("Skype", 2),
     ("*", 1),
 ]
 
@@ -104,11 +106,13 @@ def screenshot_check(key):
     if state.state != State.INACTIVE:
         return
     if keymap.prtscn == key and mod.nothing():
-        os.system("mate-screenshot -a")
+        os.system("mate-screenshot -a &")
     elif keymap.prtscn == key and mod.only(Modifier.CTRL):
-        os.system("mate-screenshot")
-    elif keymap.prtscn == key and mod.only(Modifier.SHIFT):
-        os.system("mate-screenshot -w")
+        os.system("mate-screenshot &")
+    elif keymap.prtscn == key and mod.only(Modifier.CMD):
+        os.system("mate-screenshot -w &")
+    elif keymap.prtscn == key and mod.only(Modifier.ALT):
+        os.system("mate-screenshot -i &")
 
 
 def volume_check(key):
@@ -234,7 +238,7 @@ def key_check(key):
 
 def mute_check(key):
     # print(key == keymap.m.key, mod)
-    if keymap.m == key and mod.exactly([Modifier.CMD, Modifier.ALT]):
+    if keymap.m == key and mod.exactly([Modifier.CMD, Modifier.SHIFT]):
         # print("*")
         # with Pulse() as pulse:
         #     mic_source = [p for p in pulse.source_list() if fnmatch(p.name, setup.mic_source)]
@@ -293,8 +297,9 @@ def pulse_loop():
                 r = setup.relevancy(s)
                 pos_b = [r[1] if r is not None and r[0] != 0 else -1]
             state.sink_layouts[pos_a] = pos_b
-            if (len(pos_b) == 0 or pos_b[0] == -1) and f"invalid-{pos_a}" not in state.blinking:
-                state.blinking.add(f"invalid-{pos_a}")
+            if len(pos_b) == 0 or pos_b[0] == -1:
+                if f"invalid-{pos_a}" not in state.blinking:
+                    state.blinking.add(f"invalid-{pos_a}")
             elif pos_b[0] != -1 and f"invalid-{pos_a}" in state.blinking:
                 state.blinking.remove(f"invalid-{pos_a}")
 
@@ -322,6 +327,15 @@ def pulse_loop():
             if "mic-err" in state.blinking:
                 state.blinking.remove("mic-err")
             state.mic_mute = bool(mic_source[0].mute)
+        # <hardcoded>
+        try:
+            card = [c for c in pulse.card_list() if c.name == "bluez_card.38_18_4C_BF_47_B8"][0]
+            if card and card.profile_active.description == "Off":
+                profile = sorted([p for p in card.profile_list if p.available], key=lambda k: k.priority)[::-1][0]
+                pulse.card_profile_set(card, profile)
+        except IndexError:
+            pass
+        # </hardcoded>
         display()
 
     def loop():
