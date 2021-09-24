@@ -264,8 +264,8 @@ def blink_loop():
                 sleep(setup.blink_interval[0] / 1000)
                 write_ckb(" ".join([f"{k}:00000000" for k, c in ckb.items()]), ckb_pipe)
                 sleep(setup.blink_interval[1] / 1000)
-        except KeyboardInterrupt:
-            pass
+        finally:
+            shutdown()
     thr = Thread(target=blinking)
     thr.start()
     return thr
@@ -344,8 +344,8 @@ def pulse_loop():
                 while state.state != State.DEAD:
                     update_from_pulse(pulse)
                     sleep(setup.pulse_update_interval / 1000)
-        except KeyboardInterrupt:
-            pass
+        finally:
+            shutdown()
     thr = Thread(target=loop)
     thr.start()
     return thr
@@ -381,5 +381,5 @@ try:
     with Listener(on_press=key_down, on_release=key_up) as listener:
         print("Startup: OK")
         listener.join()
-except KeyboardInterrupt:
+finally:
     shutdown()
